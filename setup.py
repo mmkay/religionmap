@@ -11,6 +11,9 @@ setup(
     name='django-religionmap',
     version='0.1',
     packages=find_packages(),
+    install_requires=[
+        'overpass'
+    ],
     include_package_data=True,
     license='MIT License',  # example license
     description='A simple Django app to show religion data.',
