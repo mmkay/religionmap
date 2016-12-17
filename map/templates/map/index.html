@@ -1,0 +1,18 @@
+<h1>Temples map</h1>
+{% if lat %}
+    <b>Lat: {{ lat }}</b>
+{% else %}
+    <b>No lat!</b>
+{% endif %}
+<hr>
+{% if lon %}
+    <b>Lon: {{ lon }}</b>
+{% else %}
+    <b>No lon!</b>
+{% endif %}
+<hr>
+{% if span %}
+    <b>span: {{ span }}</b>
+{% else %}
+    <b>No span!</b>
+{% endif %}
