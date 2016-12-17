@@ -13,6 +13,6 @@ def temples(request, lat, lon, span):
         "lat": lat,
         "lon": lon,
         "span": span,
-        "temples": overpass_service.get_temples_tiled(float(lat), float(lon), float(span))
+        "temples": overpass_service.get_temples_tiled(float(lat), float(lon), int(span))
     }
     return render(request, 'map/index.html', context)

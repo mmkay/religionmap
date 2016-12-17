@@ -1,24 +1,80 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+</head>
+<body>
+<script src="http://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+
+{% load jsonify %}
+
 <h1>Temples map</h1>
 {% if lat %}
     <b>Lat: {{ lat }}</b>
 {% else %}
     <b>No lat!</b>
 {% endif %}
-<hr>
 {% if lon %}
     <b>Lon: {{ lon }}</b>
 {% else %}
     <b>No lon!</b>
 {% endif %}
-<hr>
 {% if span %}
     <b>span: {{ span }}</b>
 {% else %}
     <b>No span!</b>
 {% endif %}
 <hr>
+<div id="mapid" style="height:512px; width:512px; align: center;"></div>
+<hr>
 {% if temples %}
     <b>temples: {{ temples }}</b>
 {% else %}
     <b>No temples!</b>
 {% endif %}
+
+<script>
+    var mymap = L.map('mapid').setView([{{ lat }}, {{ lon }}], {{ span }});
+    var colors = ["#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46", "#008941", "#006FA6", "#A30059",
+        "#FFDBE5", "#7A4900", "#0000A6", "#63FFAC", "#B79762", "#004D43", "#8FB0FF", "#997D87"];
+    var religions = {};
+    var colorIndex = 0;
+    var maxOpacity = 0.8;
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(mymap);
+    {% for tile in temples %}
+        var tile = {{ tile | jsonify }};
+        console.log(tile);
+        if (tile.count > 0) {
+            var byDenomination = tile.by_denomination;
+            var max = 0;
+            var maxDenomination = '';
+            for (denomination in byDenomination) {
+                if (byDenomination[denomination] > max) {
+                    max = byDenomination[denomination];
+                    maxDenomination = denomination;
+                }
+            }
+            if (max > 0) {
+                if (!(maxDenomination in religions)) {
+                    religions[maxDenomination] = colors[colorIndex];
+                    colorIndex++;
+                }
+                L.polygon([
+                    [{{ tile.lat }} - {{ tile.span }}, {{ tile.lon }} - {{ tile.span }}],
+                    [{{ tile.lat }} - {{ tile.span }}, {{ tile.lon }} + {{ tile.span }}],
+                    [{{ tile.lat }} + {{ tile.span }}, {{ tile.lon }} + {{ tile.span }}],
+                    [{{ tile.lat }} + {{ tile.span }}, {{ tile.lon }} - {{ tile.span }}]
+                ], {
+                    stroke: false,
+                    fillColor: religions[maxDenomination],
+                    fillOpacity: maxOpacity * parseFloat(max) / parseFloat(tile.count),
+                    bindPopup: maxDenomination
+                }).addTo(mymap);
+            }
+        }
+    {% endfor %}
+    console.log(religions);
+</script>
+</body>
+</html>

@@ -12,7 +12,8 @@ setup(
     version='0.1',
     packages=find_packages(),
     install_requires=[
-        'overpass'
+        'overpass',
+        'django-jsonify'
     ],
     include_package_data=True,
     license='MIT License',  # example license
