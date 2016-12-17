@@ -14,7 +14,7 @@ class OverpassService:
         span = span12 * pow(2, 12 - span_value)
         print('Found span: %f' % span)
         temples_data = []
-        split_span_into = 3.0
+        split_span_into = 5.0
         for lat_step in seq(lat - span, lat + span, span / split_span_into):
             for lon_step in seq(lon - span, lon + span, span / split_span_into):
                 temples_data.append(self.get_temples(lat_step, lon_step, span / split_span_into))
